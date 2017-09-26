@@ -2,20 +2,28 @@
 {
     using UnityEngine;
     using UnityEventHelper;
+    using System.Collections;
 
     public class ControlReactor : MonoBehaviour
     {
         public Adder Adder;
         public TextMesh dispalyTextMesh;
+        private MeshRenderer textMeshRenderer;
 
         private float currentPreviewNumber;
+        private bool previewShowing = false;
+        private Color textStartColor;
 
         private VRTK_Control_UnityEvents controlEvents;
         private VRTK_InteractableObject_UnityEvents interactableObjEvents;
+        private VRTK_Slider slider;
 
         private void Awake() {
             Adder = transform.root.GetComponentInChildren<Adder>();
-            print("adder added");
+
+            slider = GetComponent<VRTK_Slider>();
+            textMeshRenderer = dispalyTextMesh.GetComponent<MeshRenderer>();
+            textStartColor = textMeshRenderer.material.color;
         }
 
         private void Start()
@@ -32,18 +40,40 @@
             if (interactableObjEvents == null) {
                 interactableObjEvents = gameObject.AddComponent<VRTK_InteractableObject_UnityEvents>();
             }
-            
             interactableObjEvents.OnUngrab.AddListener(HandleReleaseAdd);
 
+        }
+
+        IEnumerator HidePreview() {
+            yield return new WaitForSecondsRealtime(0.5f);
+            //dispalyTextMesh.text = "";
+            StartCoroutine(LerpColorAway());
+        }
+
+        IEnumerator LerpColorAway() {
+            float ElapsedTime = 0.0f;
+            float TotalTime = 0.5f;
+            while (ElapsedTime < TotalTime) {
+                ElapsedTime += Time.deltaTime;
+                textMeshRenderer.material.color = new Color(textStartColor.r, textStartColor.g, textStartColor.b, (1 - (ElapsedTime / TotalTime)));
+                yield return null;
+            }
         }
 
 
         //on CHANGE, display current value for this slider to help user gauge
         private void HandleLivePreviewChange(object sender, Control3DEventArgs e)
         {
+            textMeshRenderer.material.color = textStartColor;
             currentPreviewNumber = e.value;
-            dispalyTextMesh.text = currentPreviewNumber.ToString();
-            //dispalyTextMesh.text = currentPreviewNumber.ToString() + "(" + e.normalizedValue.ToString() + "%)";
+            if(currentPreviewNumber > 0) {  
+                dispalyTextMesh.text = "+" + currentPreviewNumber.ToString(); //add a plus sign for positive nums
+            } else if (currentPreviewNumber < 0) {
+                dispalyTextMesh.text = currentPreviewNumber.ToString();
+            } else {
+                dispalyTextMesh.text = currentPreviewNumber.ToString();
+                StartCoroutine(HidePreview());
+            }
 
         }
 
@@ -51,7 +81,13 @@
         private void HandleReleaseAdd(object interactingObject, InteractableObjectEventArgs e) 
             {
             Adder.Add(currentPreviewNumber);
-            print("adder used");
+
+            //reset slider
+            //ResetSliderToZero();
+        }
+
+        private void ResetSliderToZero() {
+            slider.ResetValue();
         }
     }
 }
