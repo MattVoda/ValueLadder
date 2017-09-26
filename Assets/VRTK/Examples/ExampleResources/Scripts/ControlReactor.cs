@@ -12,10 +12,12 @@
 
         private VRTK_Control_UnityEvents controlEvents;
         private VRTK_InteractableObject_UnityEvents interactableObjEvents;
+        private VRTK_Slider slider;
 
         private void Awake() {
             Adder = transform.root.GetComponentInChildren<Adder>();
-            print("adder added");
+
+            slider = GetComponent<VRTK_Slider>();
         }
 
         private void Start()
@@ -32,7 +34,6 @@
             if (interactableObjEvents == null) {
                 interactableObjEvents = gameObject.AddComponent<VRTK_InteractableObject_UnityEvents>();
             }
-            
             interactableObjEvents.OnUngrab.AddListener(HandleReleaseAdd);
 
         }
@@ -42,8 +43,11 @@
         private void HandleLivePreviewChange(object sender, Control3DEventArgs e)
         {
             currentPreviewNumber = e.value;
-            dispalyTextMesh.text = currentPreviewNumber.ToString();
-            //dispalyTextMesh.text = currentPreviewNumber.ToString() + "(" + e.normalizedValue.ToString() + "%)";
+            if(currentPreviewNumber > 0) {  
+                dispalyTextMesh.text = "+" + currentPreviewNumber.ToString(); //add a plus sign for positive nums
+            } else {
+                dispalyTextMesh.text = currentPreviewNumber.ToString();
+            }
 
         }
 
@@ -51,7 +55,13 @@
         private void HandleReleaseAdd(object interactingObject, InteractableObjectEventArgs e) 
             {
             Adder.Add(currentPreviewNumber);
-            print("adder used");
+
+            //reset slider
+            //ResetSliderToZero();
+        }
+
+        private void ResetSliderToZero() {
+            slider.ResetValue();
         }
     }
 }

@@ -27,6 +27,9 @@ namespace VRTK
         public float minimumValue = 0f;
         [Tooltip("The maximum value of the slider.")]
         public float maximumValue = 100f;
+
+        private float middleValue;
+
         [Tooltip("The increments in which slider values can change.")]
         public float stepSize = 0.1f;
         [Tooltip("If this is checked then when the slider is released, it will snap to the nearest value position.")]
@@ -153,6 +156,7 @@ namespace VRTK
             {
                 SnapToValue();
             }
+            ResetValue();
         }
 
         protected virtual Vector3 CalculateDiff(Vector3 initialPosition, Vector3 givenDirection, float scaleValue, float diffMultiplier, bool addition)
@@ -271,10 +275,27 @@ namespace VRTK
             sliderJoint.zDrive = snapDriver;
         }
 
+        protected virtual void ToggleSpringReset(bool state) {
+            JointDrive snapDriver = new JointDrive();
+            snapDriver.positionSpring = (state ? 1000f : 0f);
+            snapDriver.positionDamper = (state ? 10f : 0f);
+            snapDriver.maximumForce = (state ? 50f : 0f);
+
+            sliderJoint.xDrive = snapDriver;
+            sliderJoint.yDrive = snapDriver;
+            sliderJoint.zDrive = snapDriver;
+        }
+
         protected virtual void SnapToValue()
         {
             ToggleSpring(true);
             sliderJoint.targetPosition = snapPosition * -1f;
+            sliderJoint.targetVelocity = Vector3.zero;
+        }
+
+        public virtual void ResetValue() {
+            ToggleSpringReset(true);
+            sliderJoint.targetPosition = Vector3.zero;
             sliderJoint.targetVelocity = Vector3.zero;
         }
     }
