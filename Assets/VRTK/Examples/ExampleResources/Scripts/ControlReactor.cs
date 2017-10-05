@@ -45,14 +45,14 @@
         }
 
         IEnumerator HidePreview() {
-            yield return new WaitForSecondsRealtime(0.5f);
+            yield return new WaitForSecondsRealtime(0.05f);
             //dispalyTextMesh.text = "";
             StartCoroutine(LerpColorAway());
         }
 
         IEnumerator LerpColorAway() {
             float ElapsedTime = 0.0f;
-            float TotalTime = 0.5f;
+            float TotalTime = 0.3f;
             while (ElapsedTime < TotalTime) {
                 ElapsedTime += Time.deltaTime;
                 textMeshRenderer.material.color = new Color(textStartColor.r, textStartColor.g, textStartColor.b, (1 - (ElapsedTime / TotalTime)));
@@ -71,7 +71,7 @@
             } else if (currentPreviewNumber < 0) {
                 dispalyTextMesh.text = currentPreviewNumber.ToString();
             } else {
-                dispalyTextMesh.text = currentPreviewNumber.ToString();
+                dispalyTextMesh.text = " " + currentPreviewNumber.ToString();
                 StartCoroutine(HidePreview());
             }
 
@@ -79,15 +79,17 @@
 
         //on RELEASE, Add to Adder
         private void HandleReleaseAdd(object interactingObject, InteractableObjectEventArgs e) 
-            {
+        {
+            StartCoroutine(PopNumToConfirm());
             Adder.Add(currentPreviewNumber);
-
-            //reset slider
-            //ResetSliderToZero();
         }
 
-        private void ResetSliderToZero() {
-            slider.ResetValue();
+        IEnumerator PopNumToConfirm() {
+            dispalyTextMesh.fontSize = 30;
+            yield return new WaitForSecondsRealtime(0.2f);
+            dispalyTextMesh.fontSize = 15;
         }
+
+       
     }
 }
