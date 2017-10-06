@@ -3,7 +3,7 @@
     using UnityEngine;
     using UnityEventHelper;
     using System.Collections;
-
+    
     public class ControlReactor : MonoBehaviour
     {
         public Adder Adder;
@@ -17,6 +17,7 @@
         private VRTK_Control_UnityEvents controlEvents;
         private VRTK_InteractableObject_UnityEvents interactableObjEvents;
         private VRTK_Slider slider;
+
 
         private void Awake() {
             Adder = transform.root.GetComponentInChildren<Adder>();

@@ -14,6 +14,8 @@ public class DotInstantiate : MonoBehaviour {
     private int numPoints = 20;
     private float distance;
     private float segment;
+
+    public Vector3 bigSize;
     
 
     // Use this for initialization
@@ -22,6 +24,10 @@ public class DotInstantiate : MonoBehaviour {
         segment = distance / numPoints;
 
         StartCoroutine(DeployDots());
+
+        if(bigSize == null) {
+            bigSize = new Vector3(0.02f, 0.02f, 0.02f);
+        }
 	}
 	
 	// Update is called once per frame
@@ -36,13 +42,25 @@ public class DotInstantiate : MonoBehaviour {
         for (int z = 1; z <= numPoints / 2; z++) {
             yield return new WaitForSeconds(delayInSec);
 
-            GameObject blockLeft = Instantiate(dot, Vector3.zero, dot.transform.rotation) as GameObject;
-            blockLeft.transform.parent = transform;
-            blockLeft.transform.localPosition = new Vector3(z * segment * -1, 0, 0);
+            if (z == 5) {
+                GameObject blockLeft = Instantiate(dot, Vector3.zero, dot.transform.rotation) as GameObject;
+                blockLeft.transform.localScale = bigSize;
+                blockLeft.transform.parent = transform;
+                blockLeft.transform.localPosition = new Vector3(z * segment * -1, 0, 0);
 
-            GameObject blockRight = Instantiate(dot, Vector3.zero, dot.transform.rotation) as GameObject;
-            blockRight.transform.parent = transform;
-            blockRight.transform.localPosition = new Vector3(z * segment, 0, 0);
+                GameObject blockRight = Instantiate(dot, Vector3.zero, dot.transform.rotation) as GameObject;
+                blockLeft.transform.localScale = bigSize;
+                blockRight.transform.parent = transform;
+                blockRight.transform.localPosition = new Vector3(z * segment, 0, 0);
+            } else {
+                GameObject blockLeft = Instantiate(dot, Vector3.zero, dot.transform.rotation) as GameObject;
+                blockLeft.transform.parent = transform;
+                blockLeft.transform.localPosition = new Vector3(z * segment * -1, 0, 0);
+
+                GameObject blockRight = Instantiate(dot, Vector3.zero, dot.transform.rotation) as GameObject;
+                blockRight.transform.parent = transform;
+                blockRight.transform.localPosition = new Vector3(z * segment, 0, 0);
+            }
         }
 
         yield return null;

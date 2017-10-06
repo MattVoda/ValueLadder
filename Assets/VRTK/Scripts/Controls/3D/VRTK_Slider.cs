@@ -45,6 +45,7 @@ namespace VRTK
         protected Vector3 maximumLimitDiff;
         protected Vector3 snapPosition;
 
+
         protected override void OnDrawGizmos()
         {
             base.OnDrawGizmos();
