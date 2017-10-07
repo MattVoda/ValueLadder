@@ -42,33 +42,15 @@ public class DotInstantiate : MonoBehaviour {
         for (int z = 1; z < numPoints / 2; z++) {
             yield return new WaitForSeconds(delayInSec);
 
+            //left of center
             GameObject blockLeft = Instantiate(dot, Vector3.zero, dot.transform.rotation) as GameObject;
             blockLeft.transform.parent = transform;
             blockLeft.transform.localPosition = new Vector3(z * segment * -1, 0, 0);
 
+            //right of center
             GameObject blockRight = Instantiate(dot, Vector3.zero, dot.transform.rotation) as GameObject;
             blockRight.transform.parent = transform;
             blockRight.transform.localPosition = new Vector3(z * segment, 0, 0);
-
-            //if (z == 5) {
-            //    GameObject blockLeft = Instantiate(dot, Vector3.zero, dot.transform.rotation) as GameObject;
-            //    blockLeft.transform.parent = transform;
-            //    blockLeft.transform.localPosition = new Vector3(z * segment * -1, 0, 0);
-            //    //blockLeft.transform.localScale = bigSize;
-
-            //    GameObject blockRight = Instantiate(dot, Vector3.zero, dot.transform.rotation) as GameObject;
-            //    blockRight.transform.parent = transform;
-            //    blockRight.transform.localPosition = new Vector3(z * segment, 0, 0);
-            //    blockLeft.transform.localScale = bigSize;
-            //} else {
-            //    GameObject blockLeft = Instantiate(dot, Vector3.zero, dot.transform.rotation) as GameObject;
-            //    blockLeft.transform.parent = transform;
-            //    blockLeft.transform.localPosition = new Vector3(z * segment * -1, 0, 0);
-
-            //    GameObject blockRight = Instantiate(dot, Vector3.zero, dot.transform.rotation) as GameObject;
-            //    blockRight.transform.parent = transform;
-            //    blockRight.transform.localPosition = new Vector3(z * segment, 0, 0);
-            //}
         }
 
         yield return null;
